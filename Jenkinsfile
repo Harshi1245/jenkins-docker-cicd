@@ -4,25 +4,27 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Starting Jenkins CI/CD pipeline'
+                echo 'Jenkins pipeline started'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                echo 'Preparing Python dependencies'
+                bat 'python --version'
+                bat 'python -m pip --version'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running automated tests'
+                bat 'python -m pip install -r requirements.txt'
+                bat 'python -m pytest -v'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                echo 'Preparing to build Docker image'
+                bat '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe" build -t jenkins-docker-cicd:1.0 .'
             }
         }
     }
