@@ -10,21 +10,20 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                bat 'python --version'
-                bat 'python -m pip --version'
+                sh 'python3 --version'
+                sh 'python3 -m pip --version'
             }
         }
 
         stage('Test') {
             steps {
-                bat 'python -m pip install -r requirements.txt'
-                bat 'python -m pytest -v'
+                sh 'docker run --rm -v "$PWD:/app" -w /app python:3.11-slim sh -c "pip install -r requirements.txt && pytest -v"'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                bat '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe" build -t jenkins-docker-cicd:1.0 .'
+                sh 'docker build -t jenkins-docker-cicd:1.0 .'
             }
         }
     }
