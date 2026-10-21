@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -12,18 +13,13 @@ pipeline {
             steps {
                 sh 'python3 --version'
                 sh 'python3 -m pip --version'
+                sh 'python3 -m pip install --user -r requirements.txt'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'docker run --rm -v "$PWD:/app" -w /app python:3.11-slim sh -c "pip install -r requirements.txt && pytest -v"'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t jenkins-docker-cicd:1.0 .'
+                sh 'python3 -m pytest -v'
             }
         }
     }
