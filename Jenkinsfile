@@ -25,7 +25,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh '.venv/bin/python -m pytest -v'
+                 sh '.venv/bin/python -m pytest -v --cov=app --cov-report=term-missing'
             }
         }
     }
