@@ -17,6 +17,12 @@ pipeline {
             }
         }
 
+        stage('Code Quality') {
+            steps {
+                sh '.venv/bin/python -m flake8 app.py test_app.py'
+            }
+        }
+
         stage('Test') {
             steps {
                 sh '.venv/bin/python -m pytest -v'
