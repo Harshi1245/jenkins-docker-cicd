@@ -3,10 +3,8 @@ pipeline {
     agent any
 
     environment {
-        BUILDKIT_HOST = 'tcp://buildkit-builder:1234'
         DOCKER_IMAGE = 'jenkins-docker-cicd'
         IMAGE_TAG = '1.1'
-        TLS_DIR = '/var/jenkins_home/buildkit-certs'
     }
 
     stages {
@@ -36,20 +34,12 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image with BuildKit') {
+        stage('Build Docker Image') {
             steps {
                 sh '''
-                    buildctl \
-                      --addr="$BUILDKIT_HOST" \
-                      --tlsservername=buildkit-builder \
-                      --tlscacert="$TLS_DIR/ca.pem" \
-                      --tlscert="$TLS_DIR/client.pem" \
-                      --tlskey="$TLS_DIR/client-key.pem" \
-                      build \
-                      --frontend=dockerfile.v0 \
-                      --local context=. \
-                      --local dockerfile=. \
-                      --output type=image,name="harshitha1245/$DOCKER_IMAGE:$IMAGE_TAG",push=false
+                    docker build \
+                      --build-arg PIP_DEFAULT_TIMEOUT=120 \
+                      -t "$DOCKER_IMAGE:$IMAGE_TAG" .
                 '''
             }
         }
