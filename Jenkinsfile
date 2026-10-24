@@ -8,6 +8,7 @@ pipeline {
         DOCKER_IMAGE = 'jenkins-docker-cicd'
         IMAGE_TAG = '1.1'
         DOCKERHUB_REPO = 'harshitha1245/jenkins-docker-cicd'
+        APP_CONTAINER = 'genghis-devops-app'
     }
 
     stages {
@@ -61,6 +62,29 @@ pipeline {
                         docker logout
                     '''
                 }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                    set -eu
+
+                    docker pull "$DOCKERHUB_REPO:$IMAGE_TAG"
+
+                    if docker inspect "$APP_CONTAINER" >/dev/null 2>&1; then
+                        docker rm -f "$APP_CONTAINER"
+                    fi
+
+                    docker run -d \
+                      --name "$APP_CONTAINER" \
+                      --restart unless-stopped \
+                      -p 8083:5000 \
+                      "$DOCKERHUB_REPO:$IMAGE_TAG"
+
+                    sleep 5
+                    docker inspect --format='{{.State.Running}}' "$APP_CONTAINER" | grep -q true
+                '''
             }
         }
     }
