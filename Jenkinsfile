@@ -1,7 +1,7 @@
 
 pipeline {
     agent {
-    label 'docker-build-agent-2'
+    label 'docker-build-agent-new'
 }
 
     environment {
