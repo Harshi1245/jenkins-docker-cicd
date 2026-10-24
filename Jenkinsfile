@@ -1,6 +1,8 @@
 
 pipeline {
-    agent any
+    agent {
+    label 'docker-build-agent-2'
+}
 
     environment {
         DOCKER_IMAGE = 'jenkins-docker-cicd'
